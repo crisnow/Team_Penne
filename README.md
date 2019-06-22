@@ -9,4 +9,5 @@ an .ics event file and then looked at the content of that file with a text edito
 such (such as vim). “Reverse engineering” .ics files can offer significant
 insight.
 
+I have google calendar.
 
