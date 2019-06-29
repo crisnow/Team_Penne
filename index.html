@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Document</title>
+    <script src = "./jquery.min.js"></script>
+</head>
+<body>
+    <table> 
+
+    <tr>
+            <button id = 'btnSaveNDownload'> Save and Download</button> 
+    </tr>
+      
+
+    </table>
+</body>
+</html>
+
+<script>
+    $(document).ready(function (){
+        $('#btnSaveNDownload').click(function()  {
+        var header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
+                     '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
+                     '\n' + 'BEGIN:VEVENT' + '\n'
+        
+        var userDetails = "DTSTART:20190713T200000Z" + '\n' + "DTEND:20190713T230000Z" + '\n' + 
+                          "SUMMARY:Study for exam" + '\n' +  "LOCATION:Hamilton Library" + '\n';
+        
+        var tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
+
+
+        var blob = new Blob([header + userDetails +tail],
+        {
+            type: "application/json;utf - 8"
+
+        }
+        )
+
+        var userLink = document.createElement('a');
+        userLink.setAttribute('download', 'sample_calendar' + '.ics');
+        userLink.setAttribute('href', window.URL.createObjectURL(blob));
+        userLink.click();
+        });
+    });
+</script>
