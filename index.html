@@ -24,14 +24,14 @@
         var header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
                      '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
                      '\n' + 'BEGIN:VEVENT' + '\n'
-        
-        var userDetails = "DTSTART:20190713T200000Z" + '\n' + "DTEND:20190713T230000Z" + '\n' + 
-                          "SUMMARY:Study for exam" + '\n' +  "LOCATION:Hamilton Library" + '\n';
+        var dateTime = "DTSTART:20190713T200000Z" + '\n' + "DTEND:20190713T230000Z" + '\n';
+        var eventDetails = "DESCRIPTION: Study for Exam" + '\n' + 
+                          "SUMMARY:Study for exam @ Hamilton Library 10AM - 1PM" + '\n' +  "LOCATION:Hamilton Library" + '\n';
         
         var tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
 
 
-        var blob = new Blob([header + userDetails +tail],
+        var blob = new Blob([header + dateTime + eventDetails + tail],
         {
             type: "application/json;utf - 8"
 
