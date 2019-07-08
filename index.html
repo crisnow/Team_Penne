@@ -5,25 +5,91 @@
 
     <title>Document</title>
     <script src = "./jquery.min.js"></script>
+    <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
 </head>
 <body>
+    <h1>Create Calendar Event</h1>
     <table> 
-
-    <tr>
-            <button id = 'btnSaveNDownload'> Save and Download</button> 
-    </tr>
-      
-
+        <tr>
+            <td>
+                Start Date:<br>
+                <input type="date" id="cal-start-date">
+                <br>
+            </td>
+            <td>
+                Start Time:<br>
+                <input type="time" id="cal-start-time">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                End Date:<br>
+                <input type="date" id="cal-end-date">
+                <br>
+                
+            </td>
+            <td>
+                End Time:<br>
+                <input type="time" id="cal-end-time">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Location:<br>
+                <input type="text" id="cal-location">
+                <br>
+            </td>
+            <td>
+                Details:<br>
+                <input type="text" id="cal-details">
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id = 'btnSaveNDownload'> Save and Download</button>
+            </td>
+        </tr>
     </table>
 </body>
 </html>
 
 <script>
+    function validateForm(startDate, startTime, endDate, endTime, location, details){
+        return startDate && startTime && endDate && endTime&& location && details
+    }
+
+    function formatIcsDate(dateString, timeString){
+
+        let dateObj = new Date(dateString+' '+timeString);
+
+        // 20190713T200000Z
+        return dateFns.format(dateObj, 'YYYYMMDDTHHmmss');
+    }
+
     $(document).ready(function (){
         $('#btnSaveNDownload').click(function()  {
-        var header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
+
+            // Grab Form Data
+            let startDate = document.getElementById('cal-start-date').value;
+            let endDate = document.getElementById('cal-end-date').value;
+            let startTime = document.getElementById('cal-start-time').value;
+            let endTime = document.getElementById('cal-end-time').value;
+            let location = document.getElementById('cal-location').value;
+            let details = document.getElementById('cal-details').value;
+
+            // Validate Form
+            if(validateForm(startDate, startTime, endDate, endTime, location, details)){
+                let formattedStart = formatIcsDate(startDate, startTime);
+                let formattedEnd = formatIcsDate(endDate, endTime);
+
+                let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
                      '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
                      '\n' + 'BEGIN:VEVENT' + '\n'
+<<<<<<< HEAD
         var dateTime = "DTSTART:20190713T200000Z" + '\n' + "DTEND:20190713T230000Z" + '\n';
         var eventDetails = "DESCRIPTION: Study for Exam" + '\n' + 
                           "SUMMARY:Study for exam @ Hamilton Library 10AM - 1PM" + '\n' +  "LOCATION:Hamilton Library" + '\n';
@@ -34,14 +100,31 @@
         var blob = new Blob([header + dateTime + eventDetails + tail],
         {
             type: "application/json;utf - 8"
+=======
+        
+                let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n' + 
+                                "SUMMARY:" + details + '\n' +  "LOCATION:" + location + '\n';
+                
+                let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
 
-        }
-        )
 
-        var userLink = document.createElement('a');
-        userLink.setAttribute('download', 'sample_calendar' + '.ics');
-        userLink.setAttribute('href', window.URL.createObjectURL(blob));
-        userLink.click();
+                let blob = new Blob([header + userDetails +tail],
+                {
+                    type: "application/json;utf - 8"
+>>>>>>> event-details-form
+
+                }
+                )
+
+                let userLink = document.createElement('a');
+                userLink.setAttribute('download', details.replace(/ /g,"_") + '_cal_event' + '.ics');
+                userLink.setAttribute('href', window.URL.createObjectURL(blob));
+                userLink.click();
+            }
+            // Warning
+            else {
+                alert('Please fill out all form fields!');
+            }
         });
     });
 </script>
