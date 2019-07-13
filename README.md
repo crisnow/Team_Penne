@@ -1,5 +1,10 @@
 # Team_Penne
 
+# Third check-in
+
+You developing and performing test cases as you are developing code
+You have functioning code that does more than it did for the first check-in. You must demonstrate a user interface for an event creation system that uses menus and checks input for validity (i.e., no 30 February events, no events that end before they start, ...)
+You have a plan for implementing some aspects of recurring events..
 
 # Second check-in
 
