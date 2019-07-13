@@ -1,5 +1,7 @@
 # Team_Penne
 
+<img class="ui image" src="test_case1_without_filling_all_fields.jpg">
+
 # Third check-in
 
 You developing and performing test cases as you are developing code
