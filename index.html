@@ -19,26 +19,17 @@
                 <br>
             </td>
             <td>
-                End Date:<br>
-                <input type="date" id="cal-end-date">
+                Start Time:<br>
+                <input type="time" id="cal-start-time">
                 <br>
-            </td>
-            <td>
-                Recurring:<br>
-                <select id="cal-recurrence">
-                    <option value="false">Does not repeat</option>
-                    <option value="DAILY">Daily</option>
-                    <option value="WEEKLY">Weekly</option>
-                    <option value="MONTHLY">Monthly</option>
-                    <option value="YEARLY">Annually</option>
-                </select>
             </td>
         </tr>
         <tr>
             <td>
-                Start Time:<br>
-                <input type="time" id="cal-start-time">
+                End Date:<br>
+                <input type="date" id="cal-end-date">
                 <br>
+                
             </td>
             <td>
                 End Time:<br>
@@ -61,16 +52,23 @@
         </tr>
         </tr>
         <tr>
-            <td>Recurrence:<br>
-                <input type="text" id="cal-recurrence">
-                <br></td>
-                <td></td>
-            </tr>
-        <tr></tr>
-            <tr>
             <td>
-            
-                <button id = 'btnSaveNDownload'> Save and Download</button>
+                Recurring:<br>
+                <select id="cal-recurrence">
+                    <option value="false">Does not repeat</option>
+                    <option value="DAILY">Daily</option>
+                    <option value="WEEKLY">Weekly</option>
+                    <option value="MONTHLY">Monthly</option>
+                    <option value="YEARLY">Annually</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <br>
+        </tr>
+        <tr>
+            <td>
+                <button id = 'btnSaveNDownload'>Save and Download</button>
             </td>
         </tr>
     </table>
@@ -114,27 +112,15 @@
         }
     }
   
-    function checkDateOrder(startDate, endDate){
-        if (startDate>endDate){
-            alert('Wrong date! Please check the start date and end date again!');
-            return false;
-        }else if ((startDate == endDate)&&(startTime >= endTime)){
-            alert('Wrong time! Please check the start time and end time again!');
-            return false;
-        }else {
-            return true;
-        }
-    }
-
     $(document).ready(function (){
         $('#btnSaveNDownload').click(function() {
 
             // Grab Form Data
             let startDate = document.getElementById('cal-start-date').value;
             let endDate = document.getElementById('cal-end-date').value;
-            let rRule = document.getElementById('cal-recurrence').value;
             let startTime = document.getElementById('cal-start-time').value;
             let endTime = document.getElementById('cal-end-time').value;
+            let rRule = document.getElementById('cal-recurrence').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
 
@@ -142,8 +128,7 @@
           
             // Validate Form
             if(validateForm(startDate, startTime, endDate, endTime, location, details)
-               && checkDates(startDate, startTime, endDate, endTime) && 
-                checkDateOrder(startDate, endDate)) {
+               && checkDates(startDate, startTime, endDate, endTime)) {
                 let formattedStart = formatIcsDate(startDate, startTime);
                 let formattedEnd = formatIcsDate(endDate, endTime);
 
@@ -158,7 +143,6 @@
                 let eventDetails = "SUMMARY:" + details + '\n' + "LOCATION:" + location + '\n';
 
                 let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
-
 
                 let blob = new Blob([header + userDetails + recurrence + eventDetails + tail],
                 {
