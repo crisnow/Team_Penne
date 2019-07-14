@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+section{
+    color: rgb(243, 240, 240);
+    height: 100vh;
+    background-color: rgb(39, 41, 68);
+    font-family: monospace;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.title{
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    color: rgb(45, 117, 96);
+    font-size: 40pt;
+    font-family: monospace;
+}
+
+.score{
+    position: absolute;
+    top: 30%;
+    left: 70%;
+    padding: 5pt;
+}
+
+.score button{
+    width: 120px;
+    height: 30px;
+    background: none;
+    border: none;
+    color: rgb(243, 240, 240);
+    font-size: 11px;
+    background: rgb(45, 117, 96);
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: monospace;
+}

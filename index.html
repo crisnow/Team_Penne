@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <title>Penne Calendar App</title>
+    <link rel="stylesheet" href="./style.css">
+    <title>Create Calender File</title>
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
 </head>
 <body>
-    <h1>Create Calendar Event</h1>
-    <table> 
+    <section class="calendar">
+    <h1 class = 'title'>Create Calendar Event</h1>
+    <div class="score">
+        <table>
         <tr>
             <td>
                 Start Date:<br>
@@ -50,19 +52,30 @@
                 <input type="text" id="cal-location">
                 <br>
             </td>
+        <tr>
             <td>
                 Details:<br>
                 <input type="text" id="cal-details">
                 <br>
             </td>
         </tr>
+        </tr>
         <tr>
-            <td></td>
+            <td>Recurrence:<br>
+                <input type="text" id="cal-recurrence">
+                <br></td>
+                <td></td>
+            </tr>
+        <tr></tr>
+            <tr>
             <td>
+            
                 <button id = 'btnSaveNDownload'> Save and Download</button>
             </td>
         </tr>
     </table>
+    </div>
+    </section>
 </body>
 </html>
 
@@ -100,6 +113,18 @@
             return retVal;
         }
     }
+  
+    function checkDateOrder(startDate, endDate){
+        if (startDate>endDate){
+            alert('Wrong date! Please check the start date and end date again!');
+            return false;
+        }else if ((startDate == endDate)&&(startTime >= endTime)){
+            alert('Wrong time! Please check the start time and end time again!');
+            return false;
+        }else {
+            return true;
+        }
+    }
 
     $(document).ready(function (){
         $('#btnSaveNDownload').click(function() {
@@ -113,42 +138,42 @@
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
 
-            // Check dates
-            if (checkDates(startDate, startTime, endDate, endTime)) {
-                // Validate Form
-                if(validateForm(startDate, startTime, endDate, endTime, location, details)) {
-                    let formattedStart = formatIcsDate(startDate, startTime);
-                    let formattedEnd = formatIcsDate(endDate, endTime);
+            
+          
+            // Validate Form
+            if(validateForm(startDate, startTime, endDate, endTime, location, details)
+               && checkDates(startDate, startTime, endDate, endTime) && 
+                checkDateOrder(startDate, endDate)) {
+                let formattedStart = formatIcsDate(startDate, startTime);
+                let formattedEnd = formatIcsDate(endDate, endTime);
 
-                    let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
-                         '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
-                         '\n' + 'BEGIN:VEVENT' + '\n';
-                         
-                    let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
-                    
-                    let recurrence = recursionDates(rRule);
-                    
-                    let eventDetails = "SUMMARY:" + details + '\n' + "LOCATION:" + location + '\n';
-                    
-                    let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
+                let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
+                     '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
+                     '\n' + 'BEGIN:VEVENT' + '\n';
+
+                let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
+
+                let recurrence = recursionDates(rRule);
+
+                let eventDetails = "SUMMARY:" + details + '\n' + "LOCATION:" + location + '\n';
+
+                let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
 
 
-                    let blob = new Blob([header + userDetails + recurrence + eventDetails + tail],
-                    {
-                        type: "application/json;utf - 8"
-
-                    }
-                    )
-
-                    let userLink = document.createElement('a');
-                    userLink.setAttribute('download', details.replace(/ /g,"_") + '_cal_event' + '.ics');
-                    userLink.setAttribute('href', window.URL.createObjectURL(blob));
-                    userLink.click();
+                let blob = new Blob([header + userDetails + recurrence + eventDetails + tail],
+                {
+                    type: "application/json;utf - 8"
                 }
-                // Incomplete form
-                else {
-                    alert('Please fill out all form fields!');
-                }
+                );
+
+                let userLink = document.createElement('a');
+                userLink.setAttribute('download', details.replace(/ /g,"_") + '_cal_event' + '.ics');
+                userLink.setAttribute('href', window.URL.createObjectURL(blob));
+                userLink.click();
+            }
+            // Incomplete form
+            else {
+                alert('Please fill out all form fields!');
             }
         });
     });
