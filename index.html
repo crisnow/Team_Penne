@@ -24,15 +24,16 @@
                         <br>
                     </td>
                     <td>
-                        End Date:<br>
-                        <input type="date" id="cal-end-date">
+                        Start Time:<br>
+                        <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
                         <br>
+                        
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Start Time:<br>
-                        <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
+                        End Date:<br>
+                        <input type="date" id="cal-end-date">
                         <br>
                     </td>
                     <td>
@@ -149,18 +150,6 @@
             return retVal;
         }
     }
-  
-    function checkDateOrder(startDate, startTime, endDate, endTime){
-        if (startDate>endDate){
-            alert('Wrong date! Please check the start date and end date again!');
-            return false;
-        }else if ((startDate == endDate)&&(startTime >= endTime)){
-            alert('Wrong time! Please check the start time and end time again!');
-            return false;
-        }else {
-            return true;
-        }
-    }
     
     function autoPopulateEndDate(){
         let startDate = document.getElementById('cal-start-date').value;
@@ -180,16 +169,15 @@
             // Grab Form Data
             let startDate = document.getElementById('cal-start-date').value;
             let endDate = document.getElementById('cal-end-date').value;
-            let rRule = document.getElementById('cal-recurrence').value;
             let startTime = document.getElementById('cal-start-time').value;
             let endTime = document.getElementById('cal-end-time').value;
+            let rRule = document.getElementById('cal-recurrence').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
           
             // Validate Form
             if(validateForm(startDate, startTime, endDate, endTime, location, details)
-               && checkDates(startDate, startTime, endDate, endTime) && 
-                checkDateOrder(startDate, startTime, endDate, endTime)) {
+               && checkDates(startDate, startTime, endDate, endTime)) {
                 let formattedStart = formatIcsDate(startDate, startTime);
                 let formattedEnd = formatIcsDate(endDate, endTime);
 
