@@ -19,17 +19,26 @@
                 <br>
             </td>
             <td>
-                Start Time:<br>
-                <input type="time" id="cal-start-time">
+                End Date:<br>
+                <input type="date" id="cal-end-date">
                 <br>
+            </td>
+            <td>
+                Recurring:<br>
+                <select id="cal-recurrence">
+                    <option value="false">Does not repeat</option>
+                    <option value="DAILY">Daily</option>
+                    <option value="WEEKLY">Weekly</option>
+                    <option value="MONTHLY">Monthly</option>
+                    <option value="YEARLY">Annually</option>
+                </select>
             </td>
         </tr>
         <tr>
             <td>
-                End Date:<br>
-                <input type="date" id="cal-end-date">
+                Start Time:<br>
+                <input type="time" id="cal-start-time">
                 <br>
-                
             </td>
             <td>
                 End Time:<br>
@@ -71,64 +80,98 @@
 </html>
 
 <script>
-    function validateForm(startDate, startTime, endDate, endTime, location, details){
-        return startDate && startTime && endDate && endTime&& location && details
+    function validateForm(startDate, startTime, endDate, endTime, location, details) {
+        return startDate && startTime && endDate && endTime && location && details
+    }
+    
+    function checkDates(startDate, startTime, endDate, endTime) {
+        if (endDate < startDate) {
+            alert('Start date must start before end date.');
+            return false;
+        }
+        if (endTime < startTime && startDate === endDate) {
+            alert('Start time must start before end time.');
+            return false;
+        }
+        return true;
     }
 
-    function formatIcsDate(dateString, timeString){
+    function formatIcsDate(dateString, timeString) {
 
         let dateObj = new Date(dateString+' '+timeString);
 
         // 20190713T200000Z
         return dateFns.format(dateObj, 'YYYYMMDDTHHmmss');
     }
+    
+    function recursionDates(rRule) {    
+        if (rRule === "false") {
+            return "";
+        }
+        else {
+            let retVal = "RRULE:FREQ=" + rRule + '\n';
+            return retVal;
+        }
+    }
+  
+    function checkDateOrder(startDate, endDate){
+        if (startDate>endDate){
+            alert('Wrong date! Please check the start date and end date again!');
+            return false;
+        }else if ((startDate == endDate)&&(startTime >= endTime)){
+            alert('Wrong time! Please check the start time and end time again!');
+            return false;
+        }else {
+            return true;
+        }
+    }
 
     $(document).ready(function (){
-        $('#btnSaveNDownload').click(function()  {
+        $('#btnSaveNDownload').click(function() {
 
             // Grab Form Data
             let startDate = document.getElementById('cal-start-date').value;
             let endDate = document.getElementById('cal-end-date').value;
+            let rRule = document.getElementById('cal-recurrence').value;
             let startTime = document.getElementById('cal-start-time').value;
             let endTime = document.getElementById('cal-end-time').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
 
-            // Check no events that end before they start
-            if (startDate>endDate){
-                alert('Wrong date! Please check the start date and end date again!');
-            }else if ((startDate == endDate)&&(startTime >= endTime)){
-                alert('Wrong time! Please check the start time and end time again!');
-            }
-
+            
+          
             // Validate Form
-            if(validateForm(startDate, startTime, endDate, endTime, location, details)){
+            if(validateForm(startDate, startTime, endDate, endTime, location, details)
+               && checkDates(startDate, startTime, endDate, endTime) && 
+                checkDateOrder(startDate, endDate)) {
                 let formattedStart = formatIcsDate(startDate, startTime);
                 let formattedEnd = formatIcsDate(endDate, endTime);
 
                 let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
                      '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
-                     '\n' + 'BEGIN:VEVENT' + '\n'
-        
-                let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n' + 
-                                "SUMMARY:" + details + '\n' +  "LOCATION:" + location + '\n';
-                
+                     '\n' + 'BEGIN:VEVENT' + '\n';
+
+                let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
+
+                let recurrence = recursionDates(rRule);
+
+                let eventDetails = "SUMMARY:" + details + '\n' + "LOCATION:" + location + '\n';
+
                 let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
 
 
-                let blob = new Blob([header + userDetails +tail],
+                let blob = new Blob([header + userDetails + recurrence + eventDetails + tail],
                 {
                     type: "application/json;utf - 8"
-
                 }
-                )
+                );
 
                 let userLink = document.createElement('a');
                 userLink.setAttribute('download', details.replace(/ /g,"_") + '_cal_event' + '.ics');
                 userLink.setAttribute('href', window.URL.createObjectURL(blob));
                 userLink.click();
             }
-            // Warning
+            // Incomplete form
             else {
                 alert('Please fill out all form fields!');
             }
