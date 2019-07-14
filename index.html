@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Create Calendar File</title>
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
@@ -50,9 +51,12 @@
                     </td>
                     <td>
                         <br>
-                        <button onclick="openModal()"
-                            style="vertical-align: bottom"
-                        >Choose On Map</button>
+                        <a onclick="openModal()"
+                            style="vertical-align: bottom;
+                                    cursor: pointer;">
+                            <u>Choose On Map</u>
+                            <i class="fas fa-map-marker-alt"></i>
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -95,7 +99,6 @@
             Choose Location
         </div>
         <div class="content">
-            <div class="ui red message">NOTE: THIS FEATURE IS ONLY CURRENTLY SUPPORTED BY THE THE APPLE CALENDAR APP</div>
             <div class="search-group">
                 <label>Search:</label>
                 <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
@@ -107,9 +110,11 @@
                     </div>
                 </div>
             </div>
+
+            <div class="ui message">Note: This feature is only supported by Apple's "Calendar" app for OSX/iOS.</div>
         </div>
         <div class="actions">
-            <div class="ui black deny button" onclick="resetLocation()">
+            <div class="ui gray deny button" onclick="resetLocation()">
                 Cancel
             </div>
             <div class="ui green right labeled icon button" id="confirmPosition">
