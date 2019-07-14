@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
-    <title>Create Calender File</title>
+    <title>Create Calendar File</title>
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
 </head>
@@ -15,7 +15,7 @@
         <tr>
             <td>
                 Start Date:<br>
-                <input type="date" id="cal-start-date">
+                <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
                 <br>
             </td>
             <td>
@@ -23,21 +23,11 @@
                 <input type="date" id="cal-end-date">
                 <br>
             </td>
-            <td>
-                Recurring:<br>
-                <select id="cal-recurrence">
-                    <option value="false">Does not repeat</option>
-                    <option value="DAILY">Daily</option>
-                    <option value="WEEKLY">Weekly</option>
-                    <option value="MONTHLY">Monthly</option>
-                    <option value="YEARLY">Annually</option>
-                </select>
-            </td>
         </tr>
         <tr>
             <td>
                 Start Time:<br>
-                <input type="time" id="cal-start-time">
+                <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
                 <br>
             </td>
             <td>
@@ -49,7 +39,7 @@
         <tr>
             <td>
                 Location:<br>
-                <input type="text" id="cal-location">
+                <input type="text" id="cal-location" placeholder="name">
                 <br>
             </td>
         <tr>
@@ -62,9 +52,16 @@
         </tr>
         <tr>
             <td>Recurrence:<br>
-                <input type="text" id="cal-recurrence">
-                <br></td>
-                <td></td>
+            <select id="cal-recurrence">
+                <option value="false">Does not repeat</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+                <option value="YEARLY">Annually</option>
+            </select>
+            <br>
+            </td>
+            <td></td>
             </tr>
         <tr></tr>
             <tr>
@@ -124,6 +121,16 @@
         }else {
             return true;
         }
+    }
+    
+    function autoPopulateEndDate(){
+        let startDate = document.getElementById('cal-start-date').value;
+        document.getElementById('cal-end-date').value = startDate;
+    }
+
+    function autoPopulateEndTime(){
+        let startTime = document.getElementById('cal-start-time').value;
+        document.getElementById('cal-end-time').value = startTime;
     }
 
     $(document).ready(function (){
