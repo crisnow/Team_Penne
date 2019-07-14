@@ -43,3 +43,7 @@ section{
     cursor: pointer;
     font-family: monospace;
 }
+
+.search-group{
+    padding: 10px;
+}

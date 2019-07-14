@@ -8,8 +8,7 @@
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
     <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5Jrp9PtHe0WapppUzxbIpMDWMAcV3qE4&libraries=places"></script>
-    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc3XpnPs0PHdGtzWHDPxe0lahDHOcv2P8&libraries=places"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
@@ -64,19 +63,23 @@
                 </tr>
                 <tr>
                     <td>Recurrence:<br>
-                    <select id="cal-recurrence">
-                        <option value="false">Does not repeat</option>
-                        <option value="DAILY">Daily</option>
-                        <option value="WEEKLY">Weekly</option>
-                        <option value="MONTHLY">Monthly</option>
-                        <option value="YEARLY">Annually</option>
-                    </select>
-                    <br>
+                        <select id="cal-recurrence">
+                            <option value="false">Does not repeat</option>
+                            <option value="DAILY">Daily</option>
+                            <option value="WEEKLY">Weekly</option>
+                            <option value="MONTHLY">Monthly</option>
+                            <option value="YEARLY">Annually</option>
+                        </select>
+                        <br>
                     </td>
-                    <td></td>
-                    </tr>
-                <tr></tr>
-                    <tr>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+
+                </tr>
+                <tr>
                     <td>
                         <br>
                         <button id = 'btnSaveNDownload'> Save and Download</button>
@@ -92,6 +95,10 @@
         </div>
         <div class="content">
             <div class="ui red message">NOTE: THIS FEATURE IS ONLY CURRENTLY SUPPORTED BY THE THE APPLE CALENDAR APP</div>
+            <div class="search-group">
+                <label>Search:</label>
+                <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
+            </div>
             <div id="map" style="min-height: 40vh;"></div>
         </div>
         <div class="actions">
@@ -108,6 +115,7 @@
 </html>
 
 <script>
+    // DATE FUNCTIONS
     function validateForm(startDate, startTime, endDate, endTime, location, details) {
         return startDate && startTime && endDate && endTime && location && details
     }
@@ -164,6 +172,8 @@
         document.getElementById('cal-end-time').value = startTime;
     }
 
+
+    // DOWNLOAD FUNCTION
     $(document).ready(function (){
         $('#btnSaveNDownload').click(function() {
 
@@ -193,17 +203,17 @@
 
                 let eventDetails = "SUMMARY:" + details + '\n';
 
-                if(locationLatitute && locationLongitude){
-                    locationLatitute = locationLatitute.toFixed(6);
+                if(locationLatitude && locationLongitude){
+                    locationLatitude = locationLatitude.toFixed(6);
                     locationLongitude = locationLongitude.toFixed(6);
                     eventDetails = eventDetails
-                        // For G-cal, works if location name field doesn't get overwritten
-                        + "LOCATION;ALTREP=\""+ locationLatitute + "," + locationLongitude +"\":" + location + '\n'
+                        // For G-cal, works if location name is a valid place in G-maps i.e. address
+                        + "LOCATION;ALTREP=\""+ locationLatitude + "," + locationLongitude +"\":" + location + '\n'
                         // For Apple iCalendar and iOS, works perfectly
                         + "X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-APPLE-RADIUS=72;X-TITLE="
-                        + location +":geo:" + locationLatitute + "," + locationLongitude + '\n'
+                        + location +":geo:" + locationLatitude + "," + locationLongitude + '\n'
                         // Official iCal standard for Lat/Long but not supported by most calendar apps
-                        + "GEO:" + locationLatitute + "," + locationLongitude + '\n';
+                        + "GEO:" + locationLatitude + "," + locationLongitude + '\n';
                 } else {
                     eventDetails = eventDetails + "LOCATION:"+ location + '\n';
                 }
@@ -228,49 +238,152 @@
         });
     });
 
+    // MAP FUNCTIONS AND VARS
+
+    // Map Variables
     let lp;
-    let locationLatitute;
+    let mapSearchInput;
+    let currentMarker;
+    let searchBox;
+    let locationLatitude;
     let locationLongitude;
 
     // Modified from https://www.w3schools.com/html/tryit.asp?filename=tryhtml5_geolocation
-    function getLocation() {
+    function getLocationInit(callback) {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(setPosition);
+            navigator.geolocation.getCurrentPosition(function(position) {
+                locationLatitude = position.coords.latitude
+                locationLongitude = position.coords.longitude;
+                callback();
+            });
         } else { 
             // default to UH Manoa
-            locationLatitute = 21.296939;
+            locationLatitude = 21.296939;
             locationLongitude = -157.8193005;
+            callback();
         }
     }
 
     function setPosition(position) {
-        locationLatitute = position.coords.latitude
+        locationLatitude = position.coords.latitude
         locationLongitude = position.coords.longitude;
     }
 
     function resetLocation(){
-        locationLatitute = null;
+        locationLatitude = null;
         locationLongitude = null;
     }
 
     function openModal(){
         $('.ui.modal').modal('show');
-        let map = document.getElementById('map');
-        getLocation();
-        lp = new locationPicker(map, {
-            setCurrentPosition: true, 
-            lat: locationLatitute,
-            lng: locationLongitude
-        }, {
-            zoom: 15
-        });
+        getLocationInit(initSearchMap);
     }
+
     let confirmBtn = document.getElementById('confirmPosition');
     // Listen to button onclick event
     confirmBtn.onclick = function () {
-        let location = lp.getMarkerPosition();
-        locationLatitute = location.lat;
-        locationLongitude = location.lng;
         $('.ui.modal').modal('hide');
     };
+
+    function initSearchMap() {
+        lp = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: parseFloat(locationLatitude), lng: parseFloat(locationLongitude)},
+          zoom: 13,
+          mapTypeId: 'roadmap'
+        });
+
+        // Create the search box and link it to the UI element.
+        mapSearchInput = document.getElementById('pac-input');
+        searchBox = new google.maps.places.SearchBox(mapSearchInput);
+
+        // Bias the SearchBox results towards current map's viewport.
+        lp.addListener('bounds_changed', function() {
+          searchBox.setBounds(lp.getBounds());
+        });
+
+        let markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          let places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          let bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            let icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: lp,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            markers.forEach((pin) => {
+                pin.addListener('click', function() {
+                    lp.setZoom(20);
+                    lp.setCenter(pin.getPosition());
+                    setPosition({
+                        coords: {
+                            latitude: pin.getPosition().lat(),
+                            longitude: pin.getPosition().lng()
+                        }
+                    });
+                });
+            })
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          lp.fitBounds(bounds);
+        });
+
+        google.maps.event.addListener(lp, "click", googleMapClickHandler);
+      }
+
+    // Drop custom pin w/o search query
+    function googleMapClickHandler(event) {
+        // Remove old pin
+        if(currentMarker){
+            currentMarker.setMap(null);
+        }
+        // Set new pin
+        currentMarker = new google.maps.Marker({
+            position: event.latLng, 
+            map: lp
+        });
+        // Set position variables
+        setPosition({
+            coords: {
+                latitude: event.latLng.lat(),
+                longitude: event.latLng.lng()
+            }
+        });
+    }
+
 </script>
