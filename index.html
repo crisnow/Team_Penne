@@ -3,76 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
     <title>Create Calendar File</title>
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
+    <script type="text/javascript"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5Jrp9PtHe0WapppUzxbIpMDWMAcV3qE4&libraries=places"></script>
+    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
     <section class="calendar">
     <h1 class = 'title'>Create Calendar Event</h1>
     <div class="score">
         <table>
-        <tr>
-            <td>
-                Start Date:<br>
-                <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
-                <br>
-            </td>
-            <td>
-                End Date:<br>
-                <input type="date" id="cal-end-date">
-                <br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Start Time:<br>
-                <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
-                <br>
-            </td>
-            <td>
-                End Time:<br>
-                <input type="time" id="cal-end-time">
-                <br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Location:<br>
-                <input type="text" id="cal-location" placeholder="name">
-                <br>
-            </td>
-        <tr>
-            <td>
-                Details:<br>
-                <input type="text" id="cal-details">
-                <br>
-            </td>
-        </tr>
-        </tr>
-        <tr>
-            <td>Recurrence:<br>
-            <select id="cal-recurrence">
-                <option value="false">Does not repeat</option>
-                <option value="DAILY">Daily</option>
-                <option value="WEEKLY">Weekly</option>
-                <option value="MONTHLY">Monthly</option>
-                <option value="YEARLY">Annually</option>
-            </select>
-            <br>
-            </td>
-            <td></td>
-            </tr>
-        <tr></tr>
-            <tr>
-            <td>
-            
-                <button id = 'btnSaveNDownload'> Save and Download</button>
-            </td>
-        </tr>
-    </table>
+            <tbody>
+                <tr>
+                    <td>
+                        Start Date:<br>
+                        <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
+                        <br>
+                    </td>
+                    <td>
+                        End Date:<br>
+                        <input type="date" id="cal-end-date">
+                        <br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Start Time:<br>
+                        <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
+                        <br>
+                    </td>
+                    <td>
+                        End Time:<br>
+                        <input type="time" id="cal-end-time">
+                        <br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Location:<br>
+                        <input type="text" id="cal-location" placeholder="name">
+                        <br>
+                    </td>
+                    <td>
+                        <br>
+                        <button onclick="openModal()"
+                            style="vertical-align: bottom"
+                        >Choose On Map</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        Details:<br>
+                        <input type="text" id="cal-details" style="width: 100%">
+                        <br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Recurrence:<br>
+                    <select id="cal-recurrence">
+                        <option value="false">Does not repeat</option>
+                        <option value="DAILY">Daily</option>
+                        <option value="WEEKLY">Weekly</option>
+                        <option value="MONTHLY">Monthly</option>
+                        <option value="YEARLY">Annually</option>
+                    </select>
+                    <br>
+                    </td>
+                    <td></td>
+                    </tr>
+                <tr></tr>
+                    <tr>
+                    <td>
+                        <br>
+                        <button id = 'btnSaveNDownload'> Save and Download</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     </section>
+    <div class="ui modal">
+        <div class="header">
+            Choose Location
+        </div>
+        <div class="content">
+            <div class="ui red message">NOTE: THIS FEATURE IS ONLY CURRENTLY SUPPORTED BY THE THE APPLE CALENDAR APP</div>
+            <div id="map" style="min-height: 40vh;"></div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button" onclick="resetLocation()">
+                Cancel
+            </div>
+            <div class="ui green right labeled icon button" id="confirmPosition">
+                Confirm Location
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+      </div>
 </body>
 </html>
 
@@ -111,7 +142,7 @@
         }
     }
   
-    function checkDateOrder(startDate, endDate){
+    function checkDateOrder(startDate, startTime, endDate, endTime){
         if (startDate>endDate){
             alert('Wrong date! Please check the start date and end date again!');
             return false;
@@ -144,13 +175,11 @@
             let endTime = document.getElementById('cal-end-time').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
-
-            
           
             // Validate Form
             if(validateForm(startDate, startTime, endDate, endTime, location, details)
                && checkDates(startDate, startTime, endDate, endTime) && 
-                checkDateOrder(startDate, endDate)) {
+                checkDateOrder(startDate, startTime, endDate, endTime)) {
                 let formattedStart = formatIcsDate(startDate, startTime);
                 let formattedEnd = formatIcsDate(endDate, endTime);
 
@@ -162,10 +191,24 @@
 
                 let recurrence = recursionDates(rRule);
 
-                let eventDetails = "SUMMARY:" + details + '\n' + "LOCATION:" + location + '\n';
+                let eventDetails = "SUMMARY:" + details + '\n';
+
+                if(locationLatitute && locationLongitude){
+                    locationLatitute = locationLatitute.toFixed(6);
+                    locationLongitude = locationLongitude.toFixed(6);
+                    eventDetails = eventDetails
+                        // For G-cal, works if location name field doesn't get overwritten
+                        + "LOCATION;ALTREP=\""+ locationLatitute + "," + locationLongitude +"\":" + location + '\n'
+                        // For Apple iCalendar and iOS, works perfectly
+                        + "X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-APPLE-RADIUS=72;X-TITLE="
+                        + location +":geo:" + locationLatitute + "," + locationLongitude + '\n'
+                        // Official iCal standard for Lat/Long but not supported by most calendar apps
+                        + "GEO:" + locationLatitute + "," + locationLongitude + '\n';
+                } else {
+                    eventDetails = eventDetails + "LOCATION:"+ location + '\n';
+                }
 
                 let tail = 'END:VEVENT'+ '\n'+ 'END:VCALENDAR';
-
 
                 let blob = new Blob([header + userDetails + recurrence + eventDetails + tail],
                 {
@@ -184,4 +227,50 @@
             }
         });
     });
+
+    let lp;
+    let locationLatitute;
+    let locationLongitude;
+
+    // Modified from https://www.w3schools.com/html/tryit.asp?filename=tryhtml5_geolocation
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(setPosition);
+        } else { 
+            // default to UH Manoa
+            locationLatitute = 21.296939;
+            locationLongitude = -157.8193005;
+        }
+    }
+
+    function setPosition(position) {
+        locationLatitute = position.coords.latitude
+        locationLongitude = position.coords.longitude;
+    }
+
+    function resetLocation(){
+        locationLatitute = null;
+        locationLongitude = null;
+    }
+
+    function openModal(){
+        $('.ui.modal').modal('show');
+        let map = document.getElementById('map');
+        getLocation();
+        lp = new locationPicker(map, {
+            setCurrentPosition: true, 
+            lat: locationLatitute,
+            lng: locationLongitude
+        }, {
+            zoom: 15
+        });
+    }
+    let confirmBtn = document.getElementById('confirmPosition');
+    // Listen to button onclick event
+    confirmBtn.onclick = function () {
+        let location = lp.getMarkerPosition();
+        locationLatitute = location.lat;
+        locationLongitude = location.lng;
+        $('.ui.modal').modal('hide');
+    };
 </script>
