@@ -312,7 +312,7 @@
         searchBox.addListener('places_changed', function() {
           let places = searchBox.getPlaces();
 
-          if (places.length == 0) {
+          if (places && places.length == 0) {
             return;
           }
 
