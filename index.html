@@ -318,6 +318,22 @@
             marker.setMap(null);
           });
           markers = [];
+          
+          // Clear out custom pin
+          if(currentMarker){
+            currentMarker.setMap(null);
+          }
+
+          // if there's only one place then set latlng
+          if(places.length == 1){
+            // Set position variables
+            setPosition({
+                coords: {
+                    latitude: places[0].geometry.location.lat(),
+                    longitude: places[0].geometry.location.lng()
+                }
+            });
+          }
 
           // For each place, get the icon, name and location.
           let bounds = new google.maps.LatLngBounds();
