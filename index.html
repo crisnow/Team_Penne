@@ -287,7 +287,10 @@
     };
 
     function initSearchMap() {
-        document.getElementById('loading-screen').style.visibility = 'hidden';
+        let loadingScreen = document.getElementById('loading-screen')
+        if(loadingScreen){
+            loadingScreen.style.visibility = 'hidden';
+        }
         lp = new google.maps.Map(document.getElementById('map'), {
           center: {lat: parseFloat(locationLatitude), lng: parseFloat(locationLongitude)},
           zoom: 13,
