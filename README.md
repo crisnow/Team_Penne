@@ -1,10 +1,17 @@
 # Team_Penne
+<img class="ui image" src="map.jpg">
+
+<img class="ui image" src="current_UI.jpg">
 
 # Fourth check-in
 
-You have performed a # usability test on your system with typical users
+You have performed a usability test on your system with typical users
 
-<img class="ui image" src="test_case1_without_filling_all_fields.jpg">
+Case 1: I have asked one of my friends to test our calendar yesterday evening. He is a university student who always used the calendar to plan the events. I asked him to perform a simple task, study in his own campus on Sat morning (10am to 11am), and every week.
+
+He finished the task within 2 mins, and he gives the positive feedback about our calendar, "it's simple and easy to use". I have recorded his comments to our system too.
+
+
 
 # Third check-in
 
