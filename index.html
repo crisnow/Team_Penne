@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Create Calendar File</title>
     <script src = "./jquery.min.js"></script>
     <script src="http://cdn.date-fns.org/v1.0.0/date_fns.min.js"></script>
     <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc3XpnPs0PHdGtzWHDPxe0lahDHOcv2P8&libraries=places"></script>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc3XpnPs0PHdGtzWHDPxe0lahDHOcv2P8&libraries=places"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
@@ -19,41 +18,41 @@
         <div class="ui form">
             <div class="field">
                 <label>Title</label>
-                <input type="text" id="cal-summary" placeholder="Add title...">
+                <input type="text" id="cal-summary" placeholder="Add title..." onchange="populateEventCard('cal-summary', 'event-summary')">
             </div>
             <div class="fields">
                 <div class="field">
                 <label>Start Date</label>
-                    <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
+                    <input type="date" id="cal-start-date" onchange="populateEventCard('cal-start-date', 'event-date')">
                 </div>
                 <div class="field">
                 <label>Start Time</label>
-                    <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
+                    <input type="time" id="cal-start-time" onchange="populateEventCard('cal-start-time', 'event-times')">
                 </div>
             </div>
             <div class="fields">
                 <div class="field">
                 <label>End Date</label>
-                    <input type="date" id="cal-end-date">
+                    <input type="date" id="cal-end-date" onchange="populateEventCard('cal-end-date', 'event-date')">
                 </div>
                 <div class="field">
                 <label>End Time</label>
-                    <input type="time" id="cal-end-time">
+                    <input type="time" id="cal-end-time" onchange="populateEventCard('cal-end-time', 'event-times')">
                 </div>
             </div>
             <div class="field">
                 <label>Location</label>
                 <div class="ui action input">
-                    <input type="text" id="cal-location" placeholder="Location...">
+                    <input type="text" id="cal-location" placeholder="Location..." onchange="populateEventCard('cal-location', 'event-location')">
                     <button class="ui blue icon button" onclick="openMaps()">
-                        <i class="fas fa-map-marker-alt"></i>
+                        <i class="map marker alternate icon"></i>
                     </button>
                 </div>
             </div>
             <div class="field">
                 <label>Details</label>
                 <textarea type="textarea" rows="3" id="cal-details" 
-                    placeholder="Event Details..."></textarea>
+                    placeholder="Event Details..." onchange="populateEventCard('cal-details', 'event-desc')"></textarea>
             </div>
             <div class="field">
                 <label>Recurrence</label>
@@ -71,13 +70,23 @@
         <div class="container">
             <div class="ui card">
                 <div class="content">
-                    <div class="header">Study at UHM</div>
-                    <div class="meta">September 25, 2019</div>
-                    <div class="description">Study at UHM @ Hamilton Library</div>
+                    <div class="header" id="event-summary"></div>
+                    <div class="meta" id="event-date"></div>
+                    <div class="description">
+                    <p>
+                        <p class="right floated" id="event-times"></p>
+                        <i class="clock outline icon"></i>
+                    </p>
+                    <p>
+                        <p class="right floated" id="event-location"></p>
+                        <i class="map outline icon"></i>
+                    </p>
+                        <p id="event-desc"></p>
+                    </div>
                 </div>
                 <div class="extra content">
                     <i class="calendar outline icon"></i>
-                    Reoccurs weekly on Mo, Tu, We
+                    <p id="event-recurrence"></p>
                 </div>
             </div>
             <button class="ui button" id='btnSaveNDownload'>Save and Download</button>
@@ -187,6 +196,35 @@
 </html>
 
 <script>
+    // CARD FUNCTIONS
+    function populateEventCard(eventData, cardSection) {
+        let detail = "";
+        
+        if (eventData === "cal-start-date" || eventData === "cal-end-date") {
+            let startDate = document.getElementById('cal-start-date').value;
+            let endDate = document.getElementById('cal-end-date').value;
+            
+            if (startDate === endDate) {
+                detail = startDate;
+            }
+            else {
+                detail = startDate + " - " + endDate;
+            }
+        }
+        else if (eventData === "cal-start-time" || eventData === "cal-end-time") {
+            let startTime = document.getElementById('cal-start-time').value;
+            let endTime = document.getElementById('cal-end-time').value;
+            
+            detail = startTime + " - " + endTime;
+        }
+        else {
+            detail = document.getElementById(eventData).value;
+        }
+        
+        document.getElementById(cardSection).innerHTML = detail;
+    }
+
+
     // DATE FUNCTIONS
     function validateForm(startDate, startTime, endDate, endTime, location, details) {
         return startDate && startTime && endDate && endTime && location && details
@@ -225,13 +263,14 @@
     
     // RECURRENCE FUNCTIONS
     $('#confirmCustom').click(function() {
-        let recType = document.getElementById('rec-type').value;
+        let recQuan = document.getElementById('rec-quan').value;
+        let recDays = document.getElementById('rec-days').value;
 
-        if (recNum > 0 && recNum < 365) {
-            $('#custom-recurrence').modal('hide');
+        if (recQuan < 0 && recQuan > 365) {
+            alert('Invalid number.');
         }
         else {
-            alert('Invalid number.');
+            $('#custom-recurrence').modal('hide');
         }
     });
 
@@ -241,22 +280,55 @@
             $('#custom-recurrence').modal('show');
         }
     });
+    
+    // Code used from @leandroico
+    // Link: https://stackoverflow.com/questions/23175006/how-to-check-multiple-checkboxes-with-javascript
+    function getCheckedCheckboxesFor(checkboxName) {
+        var checkboxes = document.querySelectorAll('input[name="' + checkboxName + '"]:checked'), values = [];
+        Array.prototype.forEach.call(checkboxes, function(el) {
+            values.push(el.value);
+        });
+        return values;
+    }
 
-    function recursionDates() {
+    function recurrenceDates() {
         let recSelect = document.getElementById('cal-rec-select').value;
-        let recNum = document.getElementById('rec-quan').value;
+        let recQuan = document.getElementById('rec-quan').value;
         let recType = document.getElementById('rec-type').value;
         
+        let recDays = getCheckedCheckboxesFor('weekday');
+        console.log(recDays);
+        
         let rRule = "";
-        if (recSelect == "custom") {
-            console.log(recNum + " " + recType);
-        }
-        else if (recSelect == "false") {
+        
+        if (recSelect == "false") {
             return rRule;
         }
-        else {
-            rRule = "RRULE:FREQ=" + recSelect + '\n';
+        else if (recSelect == "custom") {
+            rRule = "RRULE:FREQ=";
+            
+            if (recQuan == 1) {
+                rRule += recType;
+            } 
+            else {
+                rRule += recType + ";INTERVAL=" + recQuan;
+            }
         }
+        else {
+            rRule = "RRULE:FREQ=" + recSelect;
+        }
+        
+        if (recDays.length > 0 && recType != "DAILY") {
+            rRule += ";WKST=SU;BYDAY=";
+            for (var i = 0; i < recDays.length; i++) {
+                rRule += recDays[i];
+                if (i != recDays.length - 1) {
+                    rRule += ",";
+                }
+            }
+        }
+        
+        rRule += '\n';
         return rRule;
     }
 
@@ -285,8 +357,7 @@
 
                 let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
                 
-                let recurrence = recursionDates();
-                console.log("rec = " + recurrence);
+                let recurrence = recurrenceDates();
 
                 let eventDetails = "SUMMARY:" + summary + '\n' + "DESCRIPTION:" + details + '\n';
 
