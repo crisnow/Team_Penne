@@ -13,88 +13,148 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
-    <section class="calendar">
-    <h1 class = 'title'>Create Calendar Event</h1>
-    <div class="score">
-        <table>
-            <tbody>
-                <tr>
-                    <td>
-                        Start Date:<br>
-                        <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
-                        <br>
-                    </td>
-                    <td>
-                        Start Time:<br>
-                        <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
-                        <br>
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        End Date:<br>
-                        <input type="date" id="cal-end-date">
-                        <br>
-                    </td>
-                    <td>
-                        End Time:<br>
-                        <input type="time" id="cal-end-time">
-                        <br>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Location:<br>
-                        <input type="text" id="cal-location" placeholder="name">
-                        <br>
-                    </td>
-                    <td>
-                        <br>
-                        <a onclick="openModal()"
-                            style="vertical-align: bottom;
-                                    cursor: pointer;">
-                            <u>Choose On Map</u>
-                            <i class="fas fa-map-marker-alt"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        Details:<br>
-                        <input type="text" id="cal-details" style="width: 100%">
-                        <br>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Recurrence:<br>
-                        <select id="cal-recurrence">
-                            <option value="false">Does not repeat</option>
-                            <option value="DAILY">Daily</option>
-                            <option value="WEEKLY">Weekly</option>
-                            <option value="MONTHLY">Monthly</option>
-                            <option value="YEARLY">Annually</option>
-                        </select>
-                        <br>
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-                <tr>
-
-                </tr>
-                <tr>
-                    <td>
-                        <br>
-                        <button id = 'btnSaveNDownload'> Save and Download</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="ui two column grid container" id="calendar-form">
+        <div class="fluid container">
+        <h1 class="ui header">Penne Calendar File Creator</h1>
+        <div class="ui form">
+            <div class="field">
+                <label>Title</label>
+                <input type="text" id="cal-summary" placeholder="Add title...">
+            </div>
+            <div class="fields">
+                <div class="field">
+                <label>Start Date</label>
+                    <input type="date" id="cal-start-date" onchange="autoPopulateEndDate()">
+                </div>
+                <div class="field">
+                <label>Start Time</label>
+                    <input type="time" id="cal-start-time" onchange="autoPopulateEndTime()">
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field">
+                <label>End Date</label>
+                    <input type="date" id="cal-end-date">
+                </div>
+                <div class="field">
+                <label>End Time</label>
+                    <input type="time" id="cal-end-time">
+                </div>
+            </div>
+            <div class="field">
+                <label>Location</label>
+                <div class="ui action input">
+                    <input type="text" id="cal-location" placeholder="Location...">
+                    <button class="ui blue icon button" onclick="openMaps()">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="field">
+                <label>Details</label>
+                <textarea type="textarea" rows="3" id="cal-details" 
+                    placeholder="Event Details..."></textarea>
+            </div>
+            <div class="field">
+                <label>Recurrence</label>
+                <select class="ui dropdown" id="cal-rec-select">
+                    <option value="false">Does not repeat</option>
+                    <option value="DAILY">Daily</option>
+                    <option value="WEEKLY">Weekly</option>
+                    <option value="MONTHLY">Monthly</option>
+                    <option value="YEARLY">Annually</option>
+                    <option value="custom">Custom...</option>
+                </select>
+            </div>
+        </div>
+        </div>
+        <div class="container">
+            <div class="ui card">
+                <div class="content">
+                    <div class="header">Study at UHM</div>
+                    <div class="meta">September 25, 2019</div>
+                    <div class="description">Study at UHM @ Hamilton Library</div>
+                </div>
+                <div class="extra content">
+                    <i class="calendar outline icon"></i>
+                    Reoccurs weekly on Mo, Tu, We
+                </div>
+            </div>
+            <button class="ui button" id='btnSaveNDownload'>Save and Download</button>
+        </div>
     </div>
-    </section>
-    <div class="ui modal">
+    
+    <div class="ui tiny modal" id="custom-recurrence">
+        <h3 class="ui header">Custom recurrence</h3>
+        <div class="content">
+            <div class="ui form">
+                <h4 class="ui header">Repeat every...</h4>
+                <div class="fields">
+                    <div class="field">
+                        <input type="number" id="rec-quan" value="1">
+                    </div>
+                        <select class="ui dropdown" id="rec-type">
+                            <option value="DAILY">days</option>
+                            <option value="WEEKLY">weeks</option>
+                            <option value="MONTHLY">months</option>
+                            <option value="YEARLY">years</option>
+                        </select>
+                </div>
+                <h4 class="ui header">Repeat on...</h4>
+                <div class="equal width inline fields" id="rec-days">
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="MO">
+                          <label>Mon</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="TU">
+                          <label>Tue</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="WE">
+                          <label>Wed</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="TH">
+                          <label>Thu</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="FR">
+                          <label>Fri</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="SA">
+                          <label>Sat</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" name="weekday" value="SU">
+                          <label>Sun</label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="ui green right button" id="confirmCustom">
+                        Done
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="ui modal" id="google-picker">
         <div class="header">
             Choose Location
         </div>
@@ -122,7 +182,7 @@
                 <i class="checkmark icon"></i>
             </div>
         </div>
-      </div>
+    </div>
 </body>
 </html>
 
@@ -152,16 +212,6 @@
         return dateFns.format(dateObj, 'YYYYMMDDTHHmmss');
     }
     
-    function recursionDates(rRule) {    
-        if (rRule === "false") {
-            return "";
-        }
-        else {
-            let retVal = "RRULE:FREQ=" + rRule + '\n';
-            return retVal;
-        }
-    }
-    
     function autoPopulateEndDate(){
         let startDate = document.getElementById('cal-start-date').value;
         document.getElementById('cal-end-date').value = startDate;
@@ -171,18 +221,55 @@
         let startTime = document.getElementById('cal-start-time').value;
         document.getElementById('cal-end-time').value = startTime;
     }
+    
+    
+    // RECURRENCE FUNCTIONS
+    $('#confirmCustom').click(function() {
+        let recType = document.getElementById('rec-type').value;
 
+        if (recNum > 0 && recNum < 365) {
+            $('#custom-recurrence').modal('hide');
+        }
+        else {
+            alert('Invalid number.');
+        }
+    });
+
+    $('#cal-rec-select').change(function() {
+        var val = $(this).val();
+        if (val == "custom") {
+            $('#custom-recurrence').modal('show');
+        }
+    });
+
+    function recursionDates() {
+        let recSelect = document.getElementById('cal-rec-select').value;
+        let recNum = document.getElementById('rec-quan').value;
+        let recType = document.getElementById('rec-type').value;
+        
+        let rRule = "";
+        if (recSelect == "custom") {
+            console.log(recNum + " " + recType);
+        }
+        else if (recSelect == "false") {
+            return rRule;
+        }
+        else {
+            rRule = "RRULE:FREQ=" + recSelect + '\n';
+        }
+        return rRule;
+    }
 
     // DOWNLOAD FUNCTION
     $(document).ready(function (){
         $('#btnSaveNDownload').click(function() {
 
             // Grab Form Data
+            let summary = document.getElementById('cal-summary').value;
             let startDate = document.getElementById('cal-start-date').value;
             let endDate = document.getElementById('cal-end-date').value;
             let startTime = document.getElementById('cal-start-time').value;
             let endTime = document.getElementById('cal-end-time').value;
-            let rRule = document.getElementById('cal-recurrence').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
           
@@ -197,10 +284,11 @@
                      '\n' + 'BEGIN:VEVENT' + '\n';
 
                 let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
+                
+                let recurrence = recursionDates();
+                console.log("rec = " + recurrence);
 
-                let recurrence = recursionDates(rRule);
-
-                let eventDetails = "SUMMARY:" + details + '\n';
+                let eventDetails = "SUMMARY:" + summary + '\n' + "DESCRIPTION:" + details + '\n';
 
                 if(locationLatitude && locationLongitude){
                     locationLatitude = locationLatitude.toFixed(6);
@@ -226,7 +314,7 @@
                 );
 
                 let userLink = document.createElement('a');
-                userLink.setAttribute('download', details.replace(/ /g,"_") + '_cal_event' + '.ics');
+                userLink.setAttribute('download', summary.replace(/ /g,"_") + '_cal_event' + '.ics');
                 userLink.setAttribute('href', window.URL.createObjectURL(blob));
                 userLink.click();
             }
@@ -236,6 +324,7 @@
             }
         });
     });
+
 
     // MAP FUNCTIONS AND VARS
 
@@ -275,15 +364,15 @@
         document.getElementById('loading-screen').style.visibility = '';
     }
 
-    function openModal(){
-        $('.ui.modal').modal('show');
+    function openMaps(){
+        $('#google-picker').modal('show');
         getLocationInit(initSearchMap);
     }
 
     let confirmBtn = document.getElementById('confirmPosition');
     // Listen to button onclick event
     confirmBtn.onclick = function () {
-        $('.ui.modal').modal('hide');
+        $('#google-picker').modal('hide');
     };
 
     function initSearchMap() {
