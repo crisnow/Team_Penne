@@ -55,6 +55,22 @@
                     placeholder="Event Details..." onchange="populateEventCard('cal-details', 'event-desc')"></textarea>
             </div>
             <div class="field">
+                <label>Classification</label>
+                <select class="ui dropdown" id="cal-class-select">
+                    <option value="PUBLIC">Public</option>
+                    <option value="PRIVATE">Private</option>
+                    <option value="CONFIDENTIAL">Confidential</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Priority</label>
+                <select class="ui dropdown" id="cal-priority-select">
+                    <option value="1">Very important</option>
+                    <option value="2">Important</option>
+                    <option value="0">Normal</option>
+                </select>
+            </div>
+            <div class="field">
                 <label>Recurrence</label>
                 <select class="ui dropdown" id="cal-rec-select">
                     <option value="false">Does not repeat</option>
@@ -63,6 +79,19 @@
                     <option value="MONTHLY">Monthly</option>
                     <option value="YEARLY">Annually</option>
                     <option value="custom">Custom...</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Time zone</label>
+                <select class="ui dropdown" id="cal-tz-select">
+                    <option value="New_York">New York</option>
+                    <option value="Los Angeles">Los Angeles</option>
+                    <option value="Chicago">Chicago</option>
+                    <option value="Houston">Houston</option>
+                    <option value="Phoenix">Phoenix</option>
+                    <option value="Philadelphia">Philadelphia</option>
+                    <option value="Fictious">Local Time</option>
                 </select>
             </div>
         </div>
@@ -344,6 +373,10 @@
             let endTime = document.getElementById('cal-end-time').value;
             let location = document.getElementById('cal-location').value;
             let details = document.getElementById('cal-details').value;
+            let classSelect = document.getElementById('cal-class-select').value;
+            let prioritySelect = document.getElementById('cal-priority-select').value;
+            let timeZone = document.getElementById('cal-tz-select').value;
+        //DTSTART;TZID=AMERICA/NEW_YORK
           
             // Validate Form
             if(validateForm(startDate, startTime, endDate, endTime, location, details)
@@ -352,10 +385,11 @@
                 let formattedEnd = formatIcsDate(endDate, endTime);
 
                 let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
-                     '\n' + 'PRODID:-//Google Inc//Google Calendar 70.9054//EN' +
-                     '\n' + 'BEGIN:VEVENT' + '\n';
+                     '\n'  + 'BEGIN:VEVENT' + '\n';
 
-                let userDetails = "DTSTART:" + formattedStart + '\n' + "DTEND:" + formattedEnd + '\n';
+                let userDetails = "DTSTART;TZID=America/"+ timeZone + ":"+ formattedStart + '\n' + 
+                                    "DTEND;TZID=America/"+ timeZone + ":" + formattedEnd + '\n' + 
+                                  "CLASS:" + classSelect + '\n' + "Priority" + prioritySelect + '\n';
                 
                 let recurrence = recurrenceDates();
 
