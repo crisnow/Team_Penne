@@ -1,7 +1,29 @@
 # Team_Penne
-<img class="ui image" src="map.jpg">
 
-<img class="ui image" src="current_UI.jpg">
+# Last delivery
+
+• The URL for a 5 minute video demonstration of your final project. Your demo shall not be longer than five minutes. You can use jing.com, screencast-o- matic.com, ...., or if you are using a Mac, QuickTime, to capture your screen to video. You need to demonstrate the functionality described below.
+
+• A one-page pdf document convincing us that your system is correct. That is, how did you test your system and what were the results?
+• A link to your documented source code in your repository.
+• Each team member turns in the same pdf document, same link to the repository, and same link to the video demo.
+
+
+Required functionality. You are developing a stand-alone application to create .ics event files. You must demonstrate the following are implemented:
+
+• Version (section 3.7.4 of RFC 5545) 
+• Classification (3.8.1.3). Note this is a way of users designating events as
+public (default), private, or confidential.
+• Geographic Position (3.8.1.6)
+• Priority (3.8.1.9)
+• Summary (3.8.1.12) 
+• DTSTART (3.8.2.4) 
+• DTEND (3.8.2.2) 
+• Time zone identifier (3.8.3.1) 
+• And some aspect (your choice) of recurring events (3.8.5). Recurring events
+(and exceptions to recurrences) can be very complicated. Start small and do what you can. For example, you might want to start with being able to schedule a meeting on the 25th of every month. Then add the ability to do exceptions, such as “except in December”).
+
+<img class="ui image" src="map.jpg">
 
 # Fourth check-in
 
