@@ -16,9 +16,14 @@
         <div class="fluid container">
         <h1 class="ui header">Penne Calendar File Creator</h1>
         <div class="ui form">
-            <div class="field">
+            <div class="ui field">
                 <label>Title</label>
-                <input type="text" id="cal-summary" placeholder="Add title..." onchange="populateEventCard('cal-summary', 'event-summary')">
+                <div class="ui action input">
+                    <input type="text" id="cal-summary" placeholder="Add title..." onchange="populateEventCard('cal-summary', 'event-summary')">
+                    <div class="ui icon button" onclick="toggleSettings()">
+                        <i class="cog icon"></i>
+                    </div>
+                </div>
             </div>
             <div class="fields">
                 <div class="field">
@@ -55,24 +60,8 @@
                     placeholder="Event Details..." onchange="populateEventCard('cal-details', 'event-desc')"></textarea>
             </div>
             <div class="field">
-                <label>Classification</label>
-                <select class="ui dropdown" id="cal-class-select">
-                    <option value="PUBLIC">Public</option>
-                    <option value="PRIVATE">Private</option>
-                    <option value="CONFIDENTIAL">Confidential</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Priority</label>
-                <select class="ui dropdown" id="cal-priority-select">
-                    <option value="1">Very important</option>
-                    <option value="2">Important</option>
-                    <option value="0">Normal</option>
-                </select>
-            </div>
-            <div class="field">
                 <label>Recurrence</label>
-                <select class="ui dropdown" id="cal-rec-select">
+                <select class="ui dropdown" id="cal-rec-select" onchange="populateEventCard('cal-rec-select', 'event-recurrence')">
                     <option value="false">Does not repeat</option>
                     <option value="DAILY">Daily</option>
                     <option value="WEEKLY">Weekly</option>
@@ -81,49 +70,85 @@
                     <option value="custom">Custom...</option>
                 </select>
             </div>
-
-            <div class="field">
-                <label>Time zone</label>
-                <select class="ui dropdown" id="cal-tz-select">
-                    <option value="New_York">New York</option>
-                    <option value="Los Angeles">Los Angeles</option>
-                    <option value="Chicago">Chicago</option>
-                    <option value="Houston">Houston</option>
-                    <option value="Phoenix">Phoenix</option>
-                    <option value="Philadelphia">Philadelphia</option>
-                    <option value="Fictious">Local Time</option>
-                </select>
-            </div>
         </div>
+        
         </div>
         <div class="container">
             <div class="ui card">
                 <div class="content">
-                    <div class="header" id="event-summary"></div>
-                    <div class="meta" id="event-date"></div>
+                    <span class="right floated" id="event-class">
+                        <i class="lock icon"></i>
+                    </span>
+                    <span class="right floated" id="event-priority">
+                        <i class="exclamation icon"></i>
+                    </span>
+
+                    <div class="header" id="event-summary">Event Title</div>
+                    <div class="meta" id="event-date">XX-XX-XXXX</div>
                     <div class="description">
                     <p>
-                        <p class="right floated" id="event-times"></p>
+                        <p class="right floated" id="event-times">XX:XX</p>
                         <i class="clock outline icon"></i>
                     </p>
                     <p>
-                        <p class="right floated" id="event-location"></p>
+                        <p class="right floated" id="event-location">Event Location</p>
                         <i class="map outline icon"></i>
                     </p>
-                        <p id="event-desc"></p>
+                        <p id="event-desc">Event Description</p>
                     </div>
                 </div>
                 <div class="extra content">
-                    <i class="calendar outline icon"></i>
-                    <p id="event-recurrence"></p>
+                    <i class="fitted calendar outline icon"></i>
+                    <p id="event-recurrence">Event Recurrence</p>
                 </div>
             </div>
             <button class="ui button" id='btnSaveNDownload'>Save and Download</button>
         </div>
     </div>
     
+    <div class="ui tiny modal" id="event-settings">
+        <h3 class="ui header">Event Settings</h3>
+        <div class="content">
+            <div class="ui form">
+                <div class="field">
+                    <label>Classification</label>
+                    <select class="ui dropdown" id="cal-class-select">
+                        <option value="PUBLIC">Public</option>
+                        <option value="PRIVATE">Private</option>
+                        <option value="CONFIDENTIAL">Confidential</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Priority</label>
+                    <select class="ui dropdown" id="cal-priority-select">
+                        <option value="1">Very important</option>
+                        <option value="2">Important</option>
+                        <option value="0">Normal</option>
+                </select>
+                </div>
+                <div class="field">
+                    <label>Time zone</label>
+                    <select class="ui dropdown" id="cal-tz-select">
+                        <option value="New_York">New York</option>
+                        <option value="Los Angeles">Los Angeles</option>
+                        <option value="Chicago">Chicago</option>
+                        <option value="Houston">Houston</option>
+                        <option value="Phoenix">Phoenix</option>
+                        <option value="Philadelphia">Philadelphia</option>
+                        <option value="Fictious">Local Time</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="ui green right button" onclick="toggleSettings()">
+                        Done
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="ui tiny modal" id="custom-recurrence">
-        <h3 class="ui header">Custom recurrence</h3>
+        <h3 class="ui header">Custom Recurrence</h3>
         <div class="content">
             <div class="ui form">
                 <h4 class="ui header">Repeat every...</h4>
@@ -184,7 +209,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="ui green right button" id="confirmCustom">
+                    <div class="ui green right button" id="confirmCustom" onclick="populateEventCard('cal-rec-select', 'event-recurrence')">
                         Done
                     </div>
                 </div>
@@ -225,7 +250,7 @@
 </html>
 
 <script>
-    // CARD FUNCTIONS
+    // OTHER FUNCTIONS
     function populateEventCard(eventData, cardSection) {
         let detail = "";
         
@@ -246,11 +271,60 @@
             
             detail = startTime + " - " + endTime;
         }
+        else if (eventData === "cal-rec-select") {
+            let recSelect = document.getElementById('cal-rec-select').value;
+            let retVal = "";
+            
+            if (recSelect === "custom") {
+                let recQuan = document.getElementById('rec-quan').value;
+                let recType = document.getElementById('rec-type').value;
+                let recDays = getCheckedCheckboxesFor('weekday');
+                
+                switch(recType) {
+                    case "DAILY": 
+                        recType = "days";
+                        break;
+                    case "WEEKLY": 
+                        recType = "weeks";
+                        break;
+                    case "MONTHLY": 
+                        recType = "months";
+                        break;
+                    case "YEARLY": 
+                        recType = "years";
+                        break;
+                    default:
+                        recType = "";
+                }
+                
+                detail = "Reoccurs every " + recQuan + " " + recType;
+                
+                if (recDays.length > 0) {
+                    detail += " on ";
+                    for (var i = 0; i < recDays.length; i++) {
+                        detail += recDays[i];
+                        if (i != recDays.length - 1) {
+                            detail += ", ";
+                        }
+                    }
+                }
+            } 
+            else if (recSelect === "false") {
+                detail = "Does not repeat";
+            }
+            else {
+                detail = "Reoccurs " + recSelect;
+            }
+        }
         else {
             detail = document.getElementById(eventData).value;
         }
         
         document.getElementById(cardSection).innerHTML = detail;
+    }
+    
+    function toggleSettings() {
+        $('#event-settings').modal('toggle');
     }
 
 
