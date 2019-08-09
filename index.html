@@ -128,15 +128,36 @@
                 </select>
                 </div>
                 <div class="field">
-                    <label>Time zone</label>
+                    <label>Time Zone</label>
                     <select class="ui dropdown" id="cal-tz-select">
-                        <option value="New_York">New York</option>
-                        <option value="Los Angeles">Los Angeles</option>
-                        <option value="Chicago">Chicago</option>
-                        <option value="Houston">Houston</option>
-                        <option value="Phoenix">Phoenix</option>
-                        <option value="Philadelphia">Philadelphia</option>
-                        <option value="Fictious">Local Time</option>
+                        <optgroup label="North America">
+                            <option value="Pacific/Honolulu">(UTC-10) Honolulu</option>
+                            <option value="America/Anchorage">(UTC-09) Alaska</option>
+                            <option value="America/Los_Angeles">(UTC-08) Los Angeles</option>
+                            <option value="America/Phoenix">(UTC-07) Phoenix</option>
+                            <option value="America/Chicago">(UTC-06) Chicago</option>
+                            <option value="America/New_York">(UTC-05) New York</option>
+                        </optgroup>
+                        <optgroup label="South America">
+                            <option value="America/Lima">(UTC-05) Peru</option>
+                            <option value="America/Caracas">(UTC-04) Venezuela</option>
+                            <option value="America/Buenos_Aires">(UTC-03) Argentina</option>
+                            <option value="America/Cuiaba">(UTC-03) Brazil</option>
+                            <option value="Atlantic/South_Georgia"> (UTC-02) South Georgia </option>
+                        </optgroup>
+                        <optgroup label="Europe">
+                            <option value="Europe/Canary">(UTC+00) Western Europe</option>
+                            <option value="Europe/London">(UTC+01) Central Europe</option>
+                            <option value="Europe/Athens">(UTC+02) Eastern Europe</option>
+                            <option value="Europe/Moscow">(UTC+03) Moscow</option>
+                        </optgroup>
+                        <optgroup label="Asias">
+                            <option value="Asia/Jerusalem">(UTC+02) Israel</option>
+                            <option value="Asia/Calcutta">(UTC+05:30) India</option>
+                            <option value="Asia/Shanghai">(UTC+08) China</option>
+                            <option value="Asia/Seoul">(UTC+09) Koreas</option>
+                            <option value="Asia/Tokyo">(UTC+09) Japan</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div>
@@ -513,8 +534,8 @@
                 let header = 'BEGIN:VCALENDAR' + '\n' + 'VERSION:2.0' +
                      '\n'  + 'BEGIN:VEVENT' + '\n';
 
-                let userDetails = "DTSTART;TZID=America/"+ timeZone + ":"+ formattedStart + '\n' + 
-                                    "DTEND;TZID=America/"+ timeZone + ":" + formattedEnd + '\n' + 
+                let userDetails = "DTSTART;TZID="+ timeZone + ":"+ formattedStart + '\n' + 
+                                    "DTEND;TZID="+ timeZone + ":" + formattedEnd + '\n' + 
                                   "CLASS:" + classSelect + '\n' + "PRIORITY:" + prioritySelect + '\n';
                 
                 let recurrence = recurrenceDates();
