@@ -77,17 +77,17 @@
             <div class="ui card">
                 <div class="content">
                     <span class="right floated" id="event-class">
-                        <i class="lock icon"></i>
+                        <i class="unlock icon"></i>
                     </span>
                     <span class="right floated" id="event-priority">
-                        <i class="exclamation icon"></i>
+                        <i class="exclamation circle icon"></i>
                     </span>
 
                     <div class="header" id="event-summary">Event Title</div>
-                    <div class="meta" id="event-date">XX-XX-XXXX</div>
+                    <div class="meta" id="event-date">YYYY-MM-DD</div>
                     <div class="description">
                     <p>
-                        <p class="right floated" id="event-times">XX:XX</p>
+                        <p class="right floated" id="event-times">hh:mm</p>
                         <i class="clock outline icon"></i>
                     </p>
                     <p>
@@ -112,7 +112,7 @@
             <div class="ui form">
                 <div class="field">
                     <label>Classification</label>
-                    <select class="ui dropdown" id="cal-class-select">
+                    <select class="ui dropdown" id="cal-class-select" onchange="populateEventCard('cal-class-select', 'event-class')">
                         <option value="PUBLIC">Public</option>
                         <option value="PRIVATE">Private</option>
                         <option value="CONFIDENTIAL">Confidential</option>
@@ -120,10 +120,11 @@
                 </div>
                 <div class="field">
                     <label>Priority</label>
-                    <select class="ui dropdown" id="cal-priority-select">
-                        <option value="1">Very important</option>
-                        <option value="2">Important</option>
-                        <option value="0">Normal</option>
+                    <select class="ui dropdown" id="cal-priority-select" onchange="populateEventCard('cal-priority-select', 'event-priority')">
+                        <option value="0">None</option>
+                        <option value="1">High priority</option>
+                        <option value="5">Medium priority</option>
+                        <option value="9">Low priority</option>
                 </select>
                 </div>
                 <div class="field">
@@ -265,12 +266,14 @@
                 detail = startDate + " - " + endDate;
             }
         }
+        
         else if (eventData === "cal-start-time" || eventData === "cal-end-time") {
             let startTime = document.getElementById('cal-start-time').value;
             let endTime = document.getElementById('cal-end-time').value;
             
             detail = startTime + " - " + endTime;
         }
+        
         else if (eventData === "cal-rec-select") {
             let recSelect = document.getElementById('cal-rec-select').value;
             let retVal = "";
@@ -313,9 +316,59 @@
                 detail = "Does not repeat";
             }
             else {
+                switch(recSelect) {
+                    case "DAILY": 
+                        recSelect = "daily";
+                        break;
+                    case "WEEKLY": 
+                        recSelect = "every week";
+                        break;
+                    case "MONTHLY": 
+                        recSelect = "every month";
+                        break;
+                    case "YEARLY": 
+                        recSelect = "every year";
+                        break;
+                    default:
+                        recSelect = "";
+                }
+            
                 detail = "Reoccurs " + recSelect;
             }
+            
+        } 
+        
+        else if (eventData === 'cal-class-select') {
+            let classSelect = document.getElementById('cal-class-select').value;
+            
+            if (classSelect === "CONFIDENTIAL") {
+                detail = "<i class='eye slash outline icon'></i>";
+            }
+            else if (classSelect === "PRIVATE") {
+                detail = "<i class='lock icon'></i>";
+            }
+            else {
+                detail = "<i class='unlock icon'></i>";
+            }
         }
+        
+        else if (eventData === 'cal-priority-select') {
+            let prioritySelect = document.getElementById('cal-priority-select').value;
+            
+            if (prioritySelect >= 1 && prioritySelect <= 3) {
+                detail = "<i class='red exclamation circle icon'></i>";
+            }
+            else if (prioritySelect >= 4 && prioritySelect <= 7) {
+                detail = "<i class='yellow exclamation circle icon'></i>";
+            }
+            else if (prioritySelect >= 7 && prioritySelect <= 9) {
+                detail = "<i class='green exclamation circle icon'></i>";
+            }
+            else {
+                detail = "<i class='exclamation circle icon'></i>";
+            }
+        }
+        
         else {
             detail = document.getElementById(eventData).value;
         }
@@ -462,7 +515,7 @@
 
                 let userDetails = "DTSTART;TZID=America/"+ timeZone + ":"+ formattedStart + '\n' + 
                                     "DTEND;TZID=America/"+ timeZone + ":" + formattedEnd + '\n' + 
-                                  "CLASS:" + classSelect + '\n' + "Priority" + prioritySelect + '\n';
+                                  "CLASS:" + classSelect + '\n' + "PRIORITY:" + prioritySelect + '\n';
                 
                 let recurrence = recurrenceDates();
 
