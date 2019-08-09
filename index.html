@@ -519,7 +519,7 @@
                 
                 let recurrence = recurrenceDates();
 
-                let eventDetails = "SUMMARY:" + summary + '\n' + "DESCRIPTION:" + details + '\n';
+                let eventDetails = "SUMMARY:" + summary + '\n' + "DESCRIPTION:" + details.replace(/\n/g,'\\n') + '\n';
 
                 if(locationLatitude && locationLongitude){
                     locationLatitude = locationLatitude.toFixed(6);
