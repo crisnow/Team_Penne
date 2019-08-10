@@ -1,5 +1,7 @@
 # Team_Penne
 
+<img class="ui image" src="Final_UI.jpg">
+
 # Last delivery
 
 • The URL for a 5 minute video demonstration of your final project. Your demo shall not be longer than five minutes. You can use jing.com, screencast-o- matic.com, ...., or if you are using a Mac, QuickTime, to capture your screen to video. You need to demonstrate the functionality described below.
